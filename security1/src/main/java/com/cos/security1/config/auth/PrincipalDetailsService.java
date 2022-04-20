@@ -2,6 +2,7 @@ package com.cos.security1.config.auth;
 
 import com.cos.security1.model.User;
 import com.cos.security1.repository.UserRepository;
+import com.cos.security1.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PrincipalDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     // Security session(Authentication(UserDetails))
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userService.findUserByUsername(username);
         if (user != null) {
             return new PrincipalDetails(user);
         }

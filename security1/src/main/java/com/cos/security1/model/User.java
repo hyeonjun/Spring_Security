@@ -1,6 +1,7 @@
 package com.cos.security1.model;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Entity;
@@ -8,8 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.sql.Timestamp;
+import java.util.Objects;
 
-@Entity @Data
+@Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class User {
 
     @Id // primary key
@@ -19,6 +25,20 @@ public class User {
     private String password;
     private String email;
     private String role; // ROLE_USER, ROLE_ADMIN
+
+    private String provider; // oauth 플랫폼
+    private String providerId; // 해당 oauth에서 받은 데이터 중 id를 저장
+
     @CreationTimestamp
     private Timestamp createDate;
+
+    @Builder
+    public User(String username, String password, String email, String provider, String providerId, Timestamp createDate) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.createDate = createDate;
+    }
 }
