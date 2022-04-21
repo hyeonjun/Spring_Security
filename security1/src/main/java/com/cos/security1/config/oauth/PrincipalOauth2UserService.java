@@ -3,6 +3,7 @@ package com.cos.security1.config.oauth;
 import com.cos.security1.config.auth.PrincipalDetails;
 import com.cos.security1.config.oauth.provider.FacebookUserInfo;
 import com.cos.security1.config.oauth.provider.GoogleUserInfo;
+import com.cos.security1.config.oauth.provider.NaverUserInfo;
 import com.cos.security1.config.oauth.provider.OAuth2UserInfo;
 import com.cos.security1.model.User;
 import com.cos.security1.service.UserService;
@@ -14,6 +15,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service @Slf4j
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
@@ -24,6 +27,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     // userRequest 데이터에 대한 후처리 되는 함수
     // 함수 종료 시 @AuthenticationPrincial 어노테이션이 만들어진다.
     @Override
+    @SuppressWarnings("unchecked")
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("userRequest Client Registration: {}", userRequest.getClientRegistration()); // registrationId로 어떤 OAuth로 로그인 했는지 확인 가능
         log.info("userRequest AccessToken: {}", userRequest.getAccessToken().getTokenValue());
@@ -35,15 +39,24 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         // 강제로 자동 회원가입을 진행
         OAuth2UserInfo oAuth2UserInfo = null;
-        String platform = userRequest.getClientRegistration().getClientName();
-        if (platform.equals("Google")){
-            log.info("구글 로그인 요청");
-            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-        } else if (platform.equals("Facebook")) {
-            log.info("페이스북 로그인 요청");
-            oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
-        } else {
-            System.out.println("불가능");
+        String platform = userRequest.getClientRegistration().getRegistrationId();
+        log.info("platform: {}", userRequest.getClientRegistration());
+        switch (platform) {
+            case "google":
+                log.info("구글 로그인 요청");
+                oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+                break;
+            case "facebook":
+                log.info("페이스북 로그인 요청");
+                oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+                break;
+            case "naver":
+                log.info("네이버 로그인 요청");
+                oAuth2UserInfo = new NaverUserInfo((Map<String, Object>) oAuth2User.getAttributes().get("response"));
+                break;
+            default:
+                System.out.println("불가능");
+                break;
         }
 
         assert oAuth2UserInfo != null;
