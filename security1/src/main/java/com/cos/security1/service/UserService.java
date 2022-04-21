@@ -20,9 +20,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public void saveUser(User user) {
-        log.info("User Save: {}", user.toString());
         user.setRole("ROLE_USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("User Save: {}", user);
         userRepository.save(user);
     }
 

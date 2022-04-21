@@ -21,6 +21,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     private UserService userService;
 
     // Security session(Authentication(UserDetails))
+    // 함수 종료 시 @AuthenticationPrincial 어노테이션이 만들어진다.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findUserByUsername(username);
