@@ -13,6 +13,14 @@ spring:
     url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
     username: cos
     password: cos1234
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on-save # on-save(호출될 때만 redis에 기록, default), immediate(즉시 redis에 기록)
+      namespace: spring:session # session 저장하는 키 값이 spring:session (default)
+  redis:
+    host: 127.0.0.1
+    port: 6379
 
   jpa:
     hibernate:

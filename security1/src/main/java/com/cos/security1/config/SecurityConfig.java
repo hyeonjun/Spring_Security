@@ -30,6 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*
+        * csrf 토큰 활성화 시
+        * 쿠키를 생성할 때 HttpOnly 태그를 사용하면 클라이언트 스트립트가 보호된 쿠키에 액세스하는 위험을 줄일 수 있으므로 쿠키 보안을 강화할 수 있음
+        * http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        * */
         http.csrf().disable();
         http.authorizeRequests()
                 .antMatchers("/user/**").authenticated() // 인증 필요
@@ -37,10 +42,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll() // 다른 요청은 권한 상관 없음
                 .and()
-                .formLogin()
-                .loginPage("/loginForm")
-                .loginProcessingUrl("/login") // /login 주소 호출 시 시큐리티가 인터셉트하여 대신 로그인을 진행
+                .formLogin() // 로그인 폼
+                .loginPage("/loginForm") // 해당 주소로 로그인 페이지 호출함
+                .loginProcessingUrl("/login") // /login 주소 호출 시 시큐리티가 인터셉트하여 대신 로그인을 진행 -> loadUserByName
                 .defaultSuccessUrl("/") // 로그인 성공 시 이동할 주소
+                .and()
+                .logout()
+                .logoutSuccessUrl("/loginForm") // 로그아웃 성공 시 리턴 URL
+                .invalidateHttpSession(true) // 인증 정보를 지우고 세션을 무효화
+                .deleteCookies("JSESSIONID", "remember-me") // JSEESION, remember-me 쿠키 삭제
+                .permitAll()
+                .and()
+                .sessionManagement()
+                .maximumSessions(-1) // 세션 최대 허용 수, -1인 경우 무제한 세션 허용
+                .maxSessionsPreventsLogin(false) // true면 중복 로그인을 막고, false면 이전 로그인의 세션을 해제
+                .expiredUrl("/loginForm")
+                .and()
+                .and().rememberMe() // 로그인 유지
+                .alwaysRemember(false) // 항상 기억? x
+                .tokenValiditySeconds(43200) // second, 12시간 유지
+                .rememberMeParameter("remember-me")
                 .and()
                 .oauth2Login() // Oauth 로그인이 완료된 후 뒤처리가 필요
                 .loginPage("/loginForm") // 코드X, (액세스토큰+사용자정보 O)

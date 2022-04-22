@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
 
     @Id // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
