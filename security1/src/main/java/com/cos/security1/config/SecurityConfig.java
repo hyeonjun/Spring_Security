@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/") // 로그인 성공 시 이동할 주소
                 .and()
                 .oauth2Login() // Oauth 로그인이 완료된 후 뒤처리가 필요
-                .loginPage("/loginForm") // 코드X, (액세스코튼+사용자프로필정보 O)
+                .loginPage("/loginForm") // 코드X, (액세스토큰+사용자정보 O)
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService);
     }

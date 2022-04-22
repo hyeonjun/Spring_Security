@@ -1,10 +1,7 @@
 package com.cos.security1.config.oauth;
 
 import com.cos.security1.config.auth.PrincipalDetails;
-import com.cos.security1.config.oauth.provider.FacebookUserInfo;
-import com.cos.security1.config.oauth.provider.GoogleUserInfo;
-import com.cos.security1.config.oauth.provider.NaverUserInfo;
-import com.cos.security1.config.oauth.provider.OAuth2UserInfo;
+import com.cos.security1.config.oauth.provider.*;
 import com.cos.security1.model.User;
 import com.cos.security1.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +50,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             case "naver":
                 log.info("네이버 로그인 요청");
                 oAuth2UserInfo = new NaverUserInfo((Map<String, Object>) oAuth2User.getAttributes().get("response"));
+                break;
+            case "kakao":
+                log.info("카카오 로그인 요청");
+                oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
                 break;
             default:
                 System.out.println("불가능");

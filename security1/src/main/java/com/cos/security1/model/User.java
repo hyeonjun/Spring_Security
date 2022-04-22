@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-@Entity
+@Entity // User클래스가 데이터베이스에 테이블이 생성됨
 @Getter
 @Setter
 @ToString
@@ -32,7 +32,7 @@ public class User {
     @CreationTimestamp
     private Timestamp createDate;
 
-    @Builder
+    @Builder // 빌더 패턴: ORM -> Java(다른 언어) Obejct -> 테이블로 매핑해주는 기술
     public User(String username, String password, String email, String provider, String providerId, Timestamp createDate) {
         this.username = username;
         this.password = password;
